@@ -52,6 +52,8 @@ MongoDB queda expuesto en `localhost:27017`.
 - Problemas encontrados y solución: —
 - Resultado: `docker compose ps` con el contenedor `bigdata-mongo` en ejecución.
 
+  ![docker compose ps con bigdata-mongo en ejecución](docs/captura-docker-compose-ps.png)
+
 ### Bloque 1 · Ingesta batch
 
 - Objetivo: —

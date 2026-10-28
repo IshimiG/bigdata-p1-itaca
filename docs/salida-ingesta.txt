@@ -1,0 +1,9 @@
+INFO Guardados 7193 registros en data/raw/alumnos_2026-10-28.json
+INFO Guardados 413 registros en data/raw/cursos_2026-10-28.json
+INFO Guardados 106814 registros en data/raw/calificaciones_2026-10-28.json
+INFO Guardados 1688 registros en data/raw/contenidos_2026-10-28.json
+INFO Guardados 257 registros en data/raw/grupos_2026-10-28.json
+INFO Alumnos sin grupo asignado en el origen: 54 (no se consideran huérfanos)
+INFO Calificaciones.Modulo -> Contenidos: correcto
+INFO Alumnos.Grupo -> Grupos: correcto
+WARNING Calificaciones.NIA -> Alumnos: 188 huérfanos (ej. {'Anyo': '2023', 'NIA': '5e7d55e135', 'Curso': '3003826541', 'Modulo': '0173', 'Nota': '0', 'Evaluacion': '01'})

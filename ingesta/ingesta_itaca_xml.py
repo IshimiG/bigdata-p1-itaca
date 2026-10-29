@@ -23,17 +23,20 @@ FICHERO_SAL = "data/.sal_nia"
 
 TABLAS = ["alumnos", "cursos", "calificaciones", "contenidos", "grupos"]
 
-# tabla -> (etiqueta de cada registro, {campo de salida: atributo XML})
+# tabla -> (etiqueta de cada registro, campos de salida). Los campos y sus nombres son los del
+# enunciado (P1): coinciden con los atributos del XML. Nombre, apellidos, documento, contacto,
+# SIP y fechas de nacimiento no se leen nunca.
 ESQUEMA = {
-    "alumnos": ("alumno", {"NIA": "NIA", "Curso": "curso", "Turno": "turno", "Grupo": "grupo"}),
-    "cursos": ("curso", {"Codigo": "codigo", "Nombre_Cas": "nombre_cas",
-                         "Nombre_Val": "nombre_val", "Padre": "padre"}),
-    "calificaciones": ("calificacion", {"NIA": "alumno", "Curso": "curso", "Modulo": "contenido",
-                                        "Nota": "nota_numerica", "Evaluacion": "evaluacion"}),
-    "contenidos": ("contenido", {"Curso": "curso", "Modulo": "codigo", "Nombre_Modulo": "nombre_cas"}),
-    "grupos": ("grupo", {"Codigo": "codigo", "Nombre": "nombre", "Turno": "turno"}),
+    "alumnos": ("alumno", ["NIA", "sexo", "nacionalidad", "provincia", "municipio", "ensenanza", "curso",
+                           "grupo", "turno", "linea", "modalidad", "repite", "estado_matricula",
+                           "tipo_matricula", "fecha_matricula", "fecha_ingreso_centro"]),
+    "cursos": ("curso", ["codigo", "nombre_cas", "nombre_val", "abreviatura", "ensenanza", "padre"]),
+    "calificaciones": ("calificacion", ["evaluacion", "alumno", "ensenanza", "curso", "contenido",
+                                        "bloque_contenido", "nota_numerica", "tipo_nota"]),
+    "contenidos": ("contenido", ["codigo", "nombre_cas", "nombre_val", "ensenanza", "curso"]),
+    "grupos": ("grupo", ["codigo", "nombre", "turno", "linea", "modalidad"]),
 }
-CAMPOS_NIA = {"alumnos", "calificaciones"}
+CAMPOS_NIA = {"NIA", "alumno"}  # campos que contienen el NIA y se anonimizan
 
 
 def cargar_sal() -> bytes:
@@ -82,13 +85,13 @@ def parsear_xml(tabla: str, curso: str, anonimizar) -> list[dict]:
     anyo = raiz.get("curso")
     registros = []
     for nodo in raiz.iter(etiqueta):
-        fila = {"Anyo": anyo}
-        for salida, atributo in campos.items():
-            valor = nodo.get(atributo)
+        fila = {"anyo": anyo}
+        for campo in campos:
+            valor = nodo.get(campo)
             valor = valor.strip() if valor is not None else None
-            if salida == "NIA" and valor:
+            if campo in CAMPOS_NIA and valor:
                 valor = anonimizar(valor)
-            fila[salida] = valor or None
+            fila[campo] = valor or None
         registros.append(fila)
     logger.info("%s %s: %d registros", curso, tabla, len(registros))
     return registros
@@ -103,27 +106,27 @@ def guardar(datos: list[dict], nombre: str) -> None:
 
 
 def validar(datos: dict[str, list[dict]]) -> bool:
-    """Integridad referencial entre tablas (clave incluye Anyo y Curso)."""
-    ok = True
-    modulos = {(r["Anyo"], r["Curso"], r["Modulo"]) for r in datos["contenidos"]}
-    grupos = {(r["Anyo"], r["Codigo"]) for r in datos["grupos"]}
-    alumnos = {(r["Anyo"], r["NIA"]) for r in datos["alumnos"]}
+    """Integridad referencial entre tablas (la clave incluye anyo y curso)."""
+    modulos = {(r["anyo"], r["curso"], r["codigo"]) for r in datos["contenidos"]}
+    grupos = {(r["anyo"], r["codigo"]) for r in datos["grupos"]}
+    alumnos = {(r["anyo"], r["NIA"]) for r in datos["alumnos"]}
     comprobaciones = [
-        ("Calificaciones.Modulo -> Contenidos",
-         [r for r in datos["calificaciones"] if (r["Anyo"], r["Curso"], r["Modulo"]) not in modulos]),
-        ("Alumnos.Grupo -> Grupos",
-         [r for r in datos["alumnos"] if r["Grupo"] and (r["Anyo"], r["Grupo"]) not in grupos]),
-        ("Calificaciones.NIA -> Alumnos",
-         [r for r in datos["calificaciones"] if (r["Anyo"], r["NIA"]) not in alumnos]),
+        ("calificaciones.contenido -> contenidos",
+         [r for r in datos["calificaciones"] if (r["anyo"], r["curso"], r["contenido"]) not in modulos]),
+        ("alumnos.grupo -> grupos",
+         [r for r in datos["alumnos"] if r["grupo"] and (r["anyo"], r["grupo"]) not in grupos]),
+        ("calificaciones.alumno -> alumnos",
+         [r for r in datos["calificaciones"] if (r["anyo"], r["alumno"]) not in alumnos]),
     ]
-    sin_grupo = sum(1 for r in datos["alumnos"] if not r["Grupo"])
+    sin_grupo = sum(1 for r in datos["alumnos"] if not r["grupo"])
     if sin_grupo:
         logger.info("Alumnos sin grupo asignado en el origen: %d (no se consideran huérfanos)", sin_grupo)
+    ok = True
     for nombre, huerfanos in comprobaciones:
         if huerfanos:
             ok = False
-            logger.warning("%s: %d huérfanos (ej. %s)", nombre, len(huerfanos), huerfanos[0])
             # se informa pero no se descartan: el hueco está en el origen
+            logger.warning("%s: %d huérfanos", nombre, len(huerfanos))
         else:
             logger.info("%s: correcto", nombre)
     return ok
@@ -140,7 +143,8 @@ def main() -> int:
         return 1
     for tabla, filas in datos.items():
         guardar(filas, tabla)
-    validar(datos)
+    if not validar(datos):
+        logger.warning("Ingesta completada; los huérfanos vienen del origen y se limpian en el Bloque 2")
     return 0
 
 

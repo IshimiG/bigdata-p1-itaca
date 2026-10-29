@@ -1,9 +1,35 @@
-INFO Guardados 7193 registros en data/raw/alumnos_2026-10-28.json
-INFO Guardados 413 registros en data/raw/cursos_2026-10-28.json
-INFO Guardados 106814 registros en data/raw/calificaciones_2026-10-28.json
-INFO Guardados 1688 registros en data/raw/contenidos_2026-10-28.json
-INFO Guardados 257 registros en data/raw/grupos_2026-10-28.json
-INFO Alumnos sin grupo asignado en el origen: 54 (no se consideran huérfanos)
-INFO Calificaciones.Modulo -> Contenidos: correcto
-INFO Alumnos.Grupo -> Grupos: correcto
-WARNING Calificaciones.NIA -> Alumnos: 188 huérfanos (ej. {'Anyo': '2023', 'NIA': '5e7d55e135', 'Curso': '3003826541', 'Modulo': '0173', 'Nota': '0', 'Evaluacion': '01'})
+2026-10-29 16:51:31,894 INFO 2021-22 alumnos: 1341 registros
+2026-10-29 16:51:31,895 INFO 2021-22 cursos: 70 registros
+2026-10-29 16:51:31,966 INFO 2021-22 calificaciones: 18906 registros
+2026-10-29 16:51:31,967 INFO 2021-22 contenidos: 265 registros
+2026-10-29 16:51:31,968 INFO 2021-22 grupos: 46 registros
+2026-10-29 16:51:31,986 INFO 2022-23 alumnos: 1411 registros
+2026-10-29 16:51:31,986 INFO 2022-23 cursos: 71 registros
+2026-10-29 16:51:32,055 INFO 2022-23 calificaciones: 20324 registros
+2026-10-29 16:51:32,059 INFO 2022-23 contenidos: 278 registros
+2026-10-29 16:51:32,059 INFO 2022-23 grupos: 47 registros
+2026-10-29 16:51:32,079 INFO 2023-24 alumnos: 1445 registros
+2026-10-29 16:51:32,080 INFO 2023-24 cursos: 68 registros
+2026-10-29 16:51:32,152 INFO 2023-24 calificaciones: 19130 registros
+2026-10-29 16:51:32,155 INFO 2023-24 contenidos: 260 registros
+2026-10-29 16:51:32,155 INFO 2023-24 grupos: 48 registros
+2026-10-29 16:51:32,176 INFO 2024-25 alumnos: 1465 registros
+2026-10-29 16:51:32,177 INFO 2024-25 cursos: 94 registros
+2026-10-29 16:51:32,260 INFO 2024-25 calificaciones: 22510 registros
+2026-10-29 16:51:32,264 INFO 2024-25 contenidos: 372 registros
+2026-10-29 16:51:32,265 INFO 2024-25 grupos: 48 registros
+2026-10-29 16:51:32,287 INFO 2025-26 alumnos: 1531 registros
+2026-10-29 16:51:32,288 INFO 2025-26 cursos: 110 registros
+2026-10-29 16:51:32,399 INFO 2025-26 calificaciones: 25944 registros
+2026-10-29 16:51:32,405 INFO 2025-26 contenidos: 513 registros
+2026-10-29 16:51:32,406 INFO 2025-26 grupos: 68 registros
+2026-10-29 16:51:32,447 INFO Guardados 7193 registros en data/raw/alumnos_2026-10-29.json
+2026-10-29 16:51:32,448 INFO Guardados 413 registros en data/raw/cursos_2026-10-29.json
+2026-10-29 16:51:32,796 INFO Guardados 106814 registros en data/raw/calificaciones_2026-10-29.json
+2026-10-29 16:51:32,801 INFO Guardados 1688 registros en data/raw/contenidos_2026-10-29.json
+2026-10-29 16:51:32,802 INFO Guardados 257 registros en data/raw/grupos_2026-10-29.json
+2026-10-29 16:51:32,824 INFO Alumnos sin grupo asignado en el origen: 54 (no se consideran huérfanos)
+2026-10-29 16:51:32,824 INFO calificaciones.contenido -> contenidos: correcto
+2026-10-29 16:51:32,824 INFO alumnos.grupo -> grupos: correcto
+2026-10-29 16:51:32,824 WARNING calificaciones.alumno -> alumnos: 188 huérfanos
+2026-10-29 16:51:32,825 WARNING Ingesta completada; los huérfanos vienen del origen y se limpian en el Bloque 2
